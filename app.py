@@ -14,6 +14,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app)
 cache = SimpleCache()
 
 JENKINS_SERVER = config('JENKINS_SERVER', default='https://ci.us-west.moz.works')
+HOME_REDIRECT = config('HOME_REDIRECT', default='https://github.com/mozmar/jenkins-redirector')
 NAME_RE = re.compile(r'^[\w-]+$')
 
 
@@ -48,11 +49,6 @@ def get_latest_build_id(jobname, branch='master'):
     return data.get('id')
 
 
-@app.route('/')
-def home():
-    return redirect('https://github.com/pmac/jenkins-redirector', 301)
-
-
 @app.route('/<jobname>/', defaults={'branch': 'master'})
 @app.route('/<jobname>/<branch>/')
 def job_redirect(jobname, branch):
@@ -66,3 +62,7 @@ def job_redirect(jobname, branch):
     return redirect('{}/blue/organizations/jenkins/{}/detail/{}/{}/pipeline/'.format(
         JENKINS_SERVER, jobname, branch, build_id))
 
+
+@app.route('/')
+def home():
+    return redirect(HOME_REDIRECT, 301)
