@@ -17,11 +17,8 @@ JENKINS_SERVER = config('JENKINS_SERVER', default='https://ci.us-west.moz.works'
 NAME_RE = re.compile(r'^[\w-]+$')
 
 
-def validate_name(name):
-    if NAME_RE.match(name):
-        return True
-
-    return False
+def validate_names(*names):
+    return all(NAME_RE.match(name) for name in names)
 
 
 def get_build_id(jobname, branch='master'):
@@ -48,7 +45,7 @@ def home():
 @app.route('/<jobname>/', defaults={'branch': 'master'})
 @app.route('/<jobname>/<branch>/')
 def job_redirect(jobname, branch):
-    if not (validate_name(jobname) and validate_name(branch)):
+    if not validate_names(jobname, branch):
         abort(400)
 
     build_id = get_build_id(jobname, branch)
