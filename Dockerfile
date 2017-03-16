@@ -1,4 +1,4 @@
-FROM quay.io/mozmar/base:latest
+FROM python:3.6-alpine
 
 # Set Python-related environment variables to reduce annoying-ness
 ENV PYTHONUNBUFFERED=1
@@ -10,12 +10,8 @@ ENV PORT=5000
 CMD ["./run.sh"]
 EXPOSE 5000
 WORKDIR /app
-RUN update-alternatives --install /bin/sh sh /bin/bash 10
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-                    build-essential python3-{dev,pip,setuptools} && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache bash
 
 COPY requirements.txt ./
 RUN pip3 install --no-cache-dir -r requirements.txt
