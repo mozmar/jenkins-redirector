@@ -40,9 +40,14 @@ def get_latest_build_id(jobname, branch='master'):
     return data.get('id')
 
 
+@app.route('/')
+def home():
+    return redirect('https://github.com/pmac/jenkins-redirector', 301)
+
+
 @app.route('/<jobname>/', defaults={'branch': 'master'})
 @app.route('/<jobname>/<branch>/')
-def home(jobname, branch):
+def job_redirect(jobname, branch):
     if not (validate_name(jobname) and validate_name(branch)):
         abort(400)
 
