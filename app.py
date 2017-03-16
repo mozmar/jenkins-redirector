@@ -26,14 +26,25 @@ def get_build_id(jobname, branch='master'):
     build_id = cache.get(cache_key)
     if build_id is None:
         build_id = get_latest_build_id(jobname, branch)
-        cache.set(cache_key, build_id, 60 * 15)
+        if build_id:
+            cache.set(cache_key, build_id, 60 * 15)
 
     return build_id
 
 
 def get_latest_build_id(jobname, branch='master'):
     api_url = '{}/job/{}/job/{}/lastBuild/api/json'.format(JENKINS_SERVER, jobname, branch)
-    data = requests.get(api_url).json()
+    resp = requests.get(api_url)
+    try:
+        resp.raise_for_status()
+    except requests.HTTPError:
+        return None
+
+    try:
+        data = resp.json()
+    except Exception:
+        return None
+
     return data.get('id')
 
 
