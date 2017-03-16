@@ -1,6 +1,6 @@
-import os
+import re
 
-from flask import Flask, abort, redirect, request
+from flask import Flask, abort, redirect
 from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.contrib.cache import SimpleCache
 
@@ -14,6 +14,14 @@ app.wsgi_app = ProxyFix(app.wsgi_app)
 cache = SimpleCache()
 
 JENKINS_SERVER = config('JENKINS_SERVER', default='https://ci.us-west.moz.works')
+NAME_RE = re.compile(r'^[\w-]+$')
+
+
+def validate_name(name):
+    if NAME_RE.match(name):
+        return True
+
+    return False
 
 
 def get_build_id(jobname, branch='master'):
@@ -32,12 +40,11 @@ def get_latest_build_id(jobname, branch='master'):
     return data.get('id')
 
 
-@app.route('/')
-def home():
-    jobname = request.args.get('jobname')
-    branch = request.args.get('branch', 'master')
-    if not (jobname and branch):
-        abort(404)
+@app.route('/<jobname>/', defaults={'branch': 'master'})
+@app.route('/<jobname>/<branch>/')
+def home(jobname, branch):
+    if not (validate_name(jobname) and validate_name(branch)):
+        abort(400)
 
     build_id = get_build_id(jobname, branch)
     if not build_id:
