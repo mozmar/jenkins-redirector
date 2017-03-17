@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Jenkins Redirector</title>
+  </head>
+  <body>
+    <h1>Jenkins Redirector</h1>
+    <p>
+      Just a little service that will use the <a href="https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API">Jenkins API</a>
+      to discover the latest build ID for a <a href="https://jenkins.io/blog/2015/12/03/pipeline-as-code-with-multibranch-workflows-in-jenkins/">multibranch pipeline</a>
+      build, and redirect to the view of said build in <a href="https://jenkins.io/projects/blueocean/">Blue Ocean</a>.
+    </p>
+    <p>It requires that you give it the job name and branch (defaults to &quot;master&quot;). For example:</p>
+    <blockquote><code><pre><a href="/bedrock_multibranch_pipeline/prod/">/bedrock_multibranch_pipeline/prod/</a></pre></code></blockquote>
+    <p><code>bedrock_multibranch_pipeline</code> is the job name, and <code>prod</code> is the branch.</p>
+    <p>
+      See the <a href="{{ github_url }}">Github Repo</a> for more details and to get the code.
+      This instance of the app is setup to work with <a href="{{ jenkins_url }}">{{ jenkins_url }}</a>.
+    </p>
+  </body>
+</html>

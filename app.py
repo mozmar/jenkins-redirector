@@ -1,6 +1,6 @@
 import re
 
-from flask import Flask, abort, redirect
+from flask import Flask, abort, redirect, render_template
 from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.contrib.cache import SimpleCache
 
@@ -14,7 +14,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app)
 cache = SimpleCache()
 
 JENKINS_SERVER = config('JENKINS_SERVER', default='https://ci.us-west.moz.works')
-HOME_REDIRECT = config('HOME_REDIRECT', default='https://github.com/mozmar/jenkins-redirector')
+GITHUB_URL = config('GITHUB_URL', default='https://github.com/mozmar/jenkins-redirector')
 NAME_RE = re.compile(r'^[\w-]+$')
 
 
@@ -65,4 +65,4 @@ def job_redirect(jobname, branch):
 
 @app.route('/')
 def home():
-    return redirect(HOME_REDIRECT, 301)
+    return render_template('index.html', github_url=GITHUB_URL, jenkins_url=JENKINS_SERVER)
