@@ -15,6 +15,7 @@ cache = SimpleCache()
 
 JENKINS_SERVER = config('JENKINS_SERVER', default='https://ci.us-west.moz.works')
 GITHUB_URL = config('GITHUB_URL', default='https://github.com/mozmar/jenkins-redirector')
+CACHE_MINUTES = config('CACHE_MINUTES', default=30, cast=int)
 NAME_RE = re.compile(r'^[\w-]+$')
 
 
@@ -28,7 +29,7 @@ def get_build_id(jobname, branch='master'):
     if build_id is None:
         build_id = get_latest_build_id(jobname, branch)
         if build_id:
-            cache.set(cache_key, build_id, 60 * 15)
+            cache.set(cache_key, build_id, 60 * CACHE_MINUTES)
 
     return build_id
 
